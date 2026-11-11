@@ -13,4 +13,8 @@ urlpatterns = [
     path("api/v1/", include("apps.accounts.urls")),
     path("api/v1/", include("apps.geo.urls")),
     path("api/v1/", include("apps.properties.urls")),
+    path("api/v1/", include("apps.land.urls")),
+    path("api/v1/", include("apps.tenancy.urls")),
+    path("api/v1/", include("apps.services.urls")),
+    path("api/v1/", include("apps.tenant_requests.urls")),
 ]

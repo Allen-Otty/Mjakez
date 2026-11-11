@@ -17,9 +17,10 @@ class Role(models.TextChoices):
     AGENT = "agent", "Property agent"
     ADMIN = "admin", "Administrator"
     STAFF = "staff", "Finance/support staff"
+    PROVIDER = "provider", "Service provider"
 
 
-SELF_SIGNUP_ROLES = (Role.TENANT, Role.LANDLORD, Role.AGENT)
+SELF_SIGNUP_ROLES = (Role.TENANT, Role.LANDLORD, Role.AGENT, Role.PROVIDER)
 
 
 class UserManager(BaseUserManager):
@@ -43,6 +44,7 @@ class UserManager(BaseUserManager):
         extra.setdefault("is_superuser", True)
         extra.setdefault("role", Role.ADMIN)
         extra.setdefault("is_phone_verified", True)
+        extra.setdefault("is_email_verified", True)
         return self.create_user(phone, password, **extra)
 
 
@@ -53,6 +55,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     role = models.CharField(max_length=10, choices=Role.choices, default=Role.TENANT)
     language = models.CharField(max_length=2, choices=[("en", "English"), ("sw", "Kiswahili")], default="en")
     is_phone_verified = models.BooleanField(default=False)
+    # Email signups stay inactive until the confirmation link is clicked.
+    is_email_verified = models.BooleanField(default=False)
+    # Explicit consent to be contacted about listings/requests (Kenya Data Protection Act).
+    contact_consent = models.BooleanField(default=False)
+    contact_consent_at = models.DateTimeField(null=True, blank=True)
     # Set by an admin when the landlord's ID/documents are approved. Listings of
     # unverified landlords are never public.
     landlord_verified = models.BooleanField(default=False)
